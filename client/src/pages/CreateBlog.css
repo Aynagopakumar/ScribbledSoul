@@ -1,0 +1,57 @@
+/* Container */
+.create-blog-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+}
+
+/* Title */
+.create-blog-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+.create-blog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Input Field */
+.create-blog-input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Editor */
+.create-blog-editor {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Submit Button */
+.create-blog-button {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-blog-button:hover {
+  background-color: #1d4ed8;
+}
+
+.create-blog-button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}

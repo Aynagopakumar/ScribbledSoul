@@ -1,0 +1,51 @@
+/* Centering the form container */
+.register-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+   background: linear-gradient(to right, #edd46f, #8a6320);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading style */
+.register-container h6 {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #9a0707;
+  margin-bottom: 1rem;
+}
+
+/* Input field styles */
+.register-container input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.register-container input:focus {
+  outline: none;
+  border-color: #34d399; /* green-400 */
+}
+
+/* Button style */
+.register-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #1035b9; /* green-500 */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.register-container button:hover {
+  background-color: #059669; /* darker green */
+}

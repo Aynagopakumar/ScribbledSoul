@@ -1,0 +1,153 @@
+/* Center the login container */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #edd46f, #8a6320);
+  padding: 2rem;
+}
+
+/* The login form card */
+.login-card {
+  background-color: rgb(125, 117, 54);
+  padding: 2.5rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(255, 254, 254, 0.1);
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(100px); 
+}
+
+/* Headings */
+.login-card h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Input fields */
+.login-card input[type="email"],
+.login-card input[type="password"] {
+  width: 90%;
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: #c7d7f8;
+}
+
+/* Submit button */
+.login-card button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #2563eb;
+  color: rgb(255, 255, 255);
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-card button:hover {
+  background-color: #202840;
+}
+
+/* Optional link for register/forgot */
+.login-card .footer-links {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #202f43;
+}
+
+.login-card .footer-links a {
+  color: #0051ff;
+  text-decoration: none;
+  margin-left: 0.5rem;
+}
+
+.login-card .footer-links a:hover {
+  text-decoration: underline;
+}
+.primary-button {
+  background-color: #0051ff;
+  color: white;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background-color: #1d4ed8;
+}
+
+.divider {
+  text-align: center;
+  margin: 1rem 0;
+  font-weight: bold;
+  color: #666;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  height: 1px;
+  width: 40%;
+  background: #ccc;
+  position: absolute;
+  top: 50%;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.social-login button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.google-btn {
+  background-color: #ffffff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.google-btn:hover {
+  background-color: #f1f1f1;
+}
+
+.facebook-btn {
+  background-color: #1877f2;
+  color: #fff;
+}
+
+.facebook-btn:hover {
+  background-color: #155ab6;
+}
