@@ -25,7 +25,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.json({ token, user: { id: user._id, username: user.username, email: user.email } });
+    res.json({ token, user: { _id: user._id, username: user.username, email: user.email } });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -40,13 +40,24 @@ const getProfile = async (req, res) => {
   }
 };
 
+// controllers/authController.js
+
 const updateProfile = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, { new: true });
+    const updates = req.body;
+    const userId = req.user.id;
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+    });
+
     res.json({ message: 'Profile updated successfully', user: updatedUser });
   } catch (err) {
-    res.status(500).json({ message: 'Update failed' });
+    console.error('Profile update error:', err);
+    res.status(500).json({ message: 'Error updating profile' });
   }
 };
+
+
 
 module.exports = { register, login, getProfile, updateProfile };
