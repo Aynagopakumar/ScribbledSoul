@@ -31,19 +31,18 @@ const Login = () => {
       const user = res.data.user;
       const token = res.data.token;
 
-      // ✅ Save full user info
       localStorage.setItem(
         'user',
         JSON.stringify({
-          id: user._id,
+          _id: user._id,
           email: user.email,
           username: user.username,
-          token: token,
+          token,
         })
       );
 
       toast.success('Login successful');
-      navigate('/blogs');
+      navigate('/dashboard/blogs');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');
     }
@@ -78,8 +77,7 @@ const Login = () => {
           <button
             className="google-btn"
             onClick={() =>
-              (window.location.href =
-                'http://localhost:5000/api/auth/google')
+              (window.location.href = 'http://localhost:5000/api/auth/google')
             }
           >
             <img
@@ -112,5 +110,3 @@ const Login = () => {
 };
 
 export default Login;
-
-

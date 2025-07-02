@@ -24,7 +24,7 @@ const BlogList = () => {
     <div className="max-w-4xl mx-auto p-6">
       {/* What's on your mind box */}
       <div
-        onClick={() => navigate('/create')}
+        onClick={() => navigate('/dashboard/create')}
         className="mb-6 border-2 border-gray-300 rounded-lg p-4 bg-white shadow cursor-pointer hover:bg-gray-50"
       >
         <p className="text-gray-600">📝 What's on your mind?</p>
@@ -32,11 +32,19 @@ const BlogList = () => {
 
       <h2 className="text-2xl font-bold mb-4">All Blog Posts</h2>
       {blogs.length > 0 ? (
-        blogs.map((blog) => <Blog key={blog._id} blog={blog} />)
-      ) : (
-        <p>No blogs found.</p>
-      )}
-    </div>
+  blogs.map((blog) => (
+    <Blog
+      key={blog._id}
+      blog={blog}
+      onDelete={(deletedId) =>
+        setBlogs((prev) => prev.filter((b) => b._id !== deletedId))
+      }
+    />
+  ))
+) : (
+  <p>No blogs found.</p>
+)}
+</div>
   );
 };
 

@@ -1,38 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
 
 const EditBlog = () => {
   const { id } = useParams();
-  const [title, setTitle] = useState('');
-  const { quill, quillRef } = useQuill();
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(true);
+  const { quill, quillRef } = useQuill();
 
-  // Fetch blog data on mount
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const token = storedUser?.token;
+
   useEffect(() => {
     if (!quill) return;
 
-    axios.get(`http://localhost:5000/api/blogs/${id}`)
-      .then((res) => {
-        const blog = res.data.blog;
-        setTitle(blog.title);
-        if (quill) {
-          quill.root.innerHTML = blog.content;
-        }
-      })
-      .catch(() => toast.error("Failed to load blog"));
+    const fetchBlog = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+        setTitle(res.data.title);
+        quill.clipboard.dangerouslyPasteHTML(res.data.content);
+      } catch (err) {
+        console.error("Error fetching blog:", err);
+        toast.error("Failed to load blog");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlog();
   }, [id, quill]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const content = quill.root.innerHTML;
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!quill) {
+        setLoading(false);
+        toast.success("Editor loaded.");
+      }
+    });
 
-    if (!title.trim() || !content || content === '<p><br></p>') {
-      toast.error('Please fill out the title and content.');
+    return () => clearTimeout(timeout);
+  }, [quill]);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    if (!title.trim()) {
+      toast.error("Title is required.");
+      return;
+    }
+
+    const content = quill?.root?.innerHTML;
+
+    if (!content || content === '<p><br></p>') {
+      toast.error("Content is required.");
       return;
     }
 
@@ -42,34 +66,37 @@ const EditBlog = () => {
         { title, content },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-      toast.success("Blog updated successfully!");
-      navigate(`/blogs/${id}`);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to update blog.");
+      toast.success("Blog updated successfully");
+      navigate('/dashboard/blogs');
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error(error.response?.data?.message || "Update failed");
     }
   };
 
+  if (loading) {
+    return <p className="text-center mt-10 text-gray-600">Loading editor...</p>;
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">✏️ Edit Blog</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-2xl mx-auto p-4">
+      <h2 className="text-2xl font-semibold mb-4">Edit Blog</h2>
+      <form onSubmit={handleUpdate}>
         <input
-          type="text"
-          placeholder="Blog Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border border-gray-300 p-2 rounded mb-4"
+          placeholder="Blog Title"
+          className="w-full p-2 border rounded mb-4"
           required
         />
-        <div ref={quillRef} className="mb-4 h-64 bg-white border border-gray-300 rounded" />
+        <div ref={quillRef} className="bg-white h-64 mb-4" />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Update Blog
         </button>

@@ -16,42 +16,49 @@ const CreateBlog = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!quill) {
-      toast.error('Editor not ready. Please wait...');
-      return;
-    }
+  if (!quill) {
+    toast.error('Editor not ready. Please wait...');
+    return;
+  }
 
-    const content = quill.root.innerHTML;
+  if (!user || !token) {
+    toast.error('You must be logged in to post a blog.');
+    return;
+  }
 
-    if (!content || content.trim() === '<p><br></p>') {
-      toast.error('Content cannot be empty');
-      return;
-    }
+  const content = quill.root.innerHTML;
 
-    try {
-      setLoading(true);
-      await axios.post(
-        'http://localhost:5000/api/blogs',
-        { title, content },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success('Blog created successfully!');
-      setTitle('');
-      quill.setText('');
-      navigate('/blogs');
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to create blog');
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!content || content.trim() === '<p><br></p>') {
+    toast.error('Content cannot be empty');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    await axios.post(
+      'http://localhost:5000/api/blogs',
+      { title, content },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    toast.success('Blog created successfully!');
+    setTitle('');
+    quill.setText('');
+    navigate('/dashboard/blogs');
+  } catch (err) {
+    console.error(err);
+    const message = err?.response?.data?.error || 'Failed to create blog';
+    toast.error(message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="create-blog-container">

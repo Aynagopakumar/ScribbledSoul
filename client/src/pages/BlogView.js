@@ -8,16 +8,24 @@ const BlogView = () => {
   const [blog, setBlog] = useState(null);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem('user')); // Get logged-in user
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user'));
+    } catch {
+      return null;
+    }
+  })();
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/blogs/${id}`)
       .then((res) => {
-        console.log('Fetched blog:', res.data.blog);
-        setBlog(res.data.blog);
+        setBlog(res.data);
+
+        // Safe debug logging
+       
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error('Error fetching blog:', err));
   }, [id]);
 
   const handleDelete = async () => {
@@ -30,32 +38,35 @@ const BlogView = () => {
         },
       });
       toast.success('Blog deleted successfully');
-      navigate('/blogs');
+      navigate('/dashboard/blogs');
     } catch (err) {
       toast.error('Failed to delete blog');
     }
   };
 
   if (!blog) return <div>Loading...</div>;
+  const loggedInId = user ? String(user.id || user._id) : null;
+  const authorId = blog?.author?._id ? String(blog.author._id) : null;
+  const isAuthor = loggedInId && authorId && loggedInId === authorId;
+
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-2">{blog.title}</h1>
 
       <div className="text-sm text-gray-500 mb-4">
         Posted by{' '}
         <span className="font-medium">
-          {blog.author?.username || blog.author?.email}
+          {blog.author?.username || blog.author?.email || 'Unknown'}
         </span>{' '}
         on {new Date(blog.createdAt).toLocaleDateString()}
       </div>
 
-      {/* Edit/Delete Buttons (only if author) */}
-      {blog.author?._id === user?.id && (
+      {isAuthor && (
         <div className="flex gap-4 mb-4">
           <button
             className="text-sm text-blue-600 hover:underline"
-            onClick={() => navigate(`/edit/${blog._id}`)}
+            onClick={() => navigate(`/dashboard/blogs/${blog._id}/edit`)}
           >
             ✏️ Edit
           </button>
