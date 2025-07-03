@@ -1,28 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import LikeButton from './LikeButton';
+import CommentModal from './CommentModal';
+import LikeModal from './LikeModal';
 
 const Blog = ({ blog, onDelete }) => {
+  const [showComments, setShowComments] = useState(false);
+  const [showLikes, setShowLikes] = useState(false);
+
   const user = (() => {
     try {
-      return JSON.parse(localStorage.getItem("user"));
+      return JSON.parse(localStorage.getItem('user'));
     } catch {
       return null;
     }
   })();
 
   const navigate = useNavigate();
- const loggedInUserId = String(user?.id); // ✅ Use .id instead of _id
-const isAuthor = blog?.author && String(blog.author._id) === loggedInUserId;
-
+  const loggedInUserId = String(user?.id || user?._id);
+  const isAuthor = blog?.author && String(blog.author._id) === loggedInUserId;
 
   const handleDelete = async () => {
     const confirm = window.confirm("Are you sure you want to delete this blog?");
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/blogs/${blog._id}`, {
+      await axios.delete(`/api/blogs/${blog._id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -44,12 +49,9 @@ const isAuthor = blog?.author && String(blog.author._id) === loggedInUserId;
       </Link>
 
       {/* Blog Content Preview */}
-      <p
-        className="text-gray-600 text-sm"
-        dangerouslySetInnerHTML={{
-          __html: blog.content?.substring(0, 150) + '...',
-        }}
-      />
+      <p className="text-gray-600 text-sm">
+        {blog.content.replace(/<[^>]+>/g, '').substring(0, 150)}...
+      </p>
 
       {/* Author and Date */}
       <div className="text-xs text-gray-500 mt-2">
@@ -57,7 +59,18 @@ const isAuthor = blog?.author && String(blog.author._id) === loggedInUserId;
         {new Date(blog.createdAt).toLocaleDateString()}
       </div>
 
-      {/* Author Options */}
+      {/* Action Buttons */}
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+        <LikeButton blogId={blog._id} initialLikes={blog.likes} />
+        <button onClick={() => setShowLikes(true)} className="text-gray-600 hover:underline">
+          ❤️ View Likes ({blog.likes.length})
+        </button>
+        <button onClick={() => setShowComments(true)} className="text-blue-600 hover:underline">
+          💬 View Comments ({blog.comments.length})
+        </button>
+      </div>
+
+      {/* Author Actions */}
       {isAuthor && (
         <div className="mt-4 flex gap-4">
           <button
@@ -73,6 +86,22 @@ const isAuthor = blog?.author && String(blog.author._id) === loggedInUserId;
             🗑️ Delete
           </button>
         </div>
+      )}
+
+      {/* Modals */}
+      {showComments && (
+        <CommentModal
+          blogId={blog._id}
+          isOpen={showComments}
+          onClose={() => setShowComments(false)}
+        />
+      )}
+      {showLikes && (
+        <LikeModal
+          blogId={blog._id}
+          isOpen={showLikes}
+          onClose={() => setShowLikes(false)}
+        />
       )}
     </div>
   );

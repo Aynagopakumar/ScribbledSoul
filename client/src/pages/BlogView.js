@@ -17,15 +17,13 @@ const BlogView = () => {
   })();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/blogs/${id}`)
-      .then((res) => {
-        setBlog(res.data);
+  axios
+  .get(`http://localhost:5000/api/blogs/${id}`)
+  .then((res) => {
+    setBlog(res.data.blog); // ✅ FIXED: extract `blog` correctly
+  })
+  .catch((err) => console.error('Error fetching blog:', err));
 
-        // Safe debug logging
-       
-      })
-      .catch((err) => console.error('Error fetching blog:', err));
   }, [id]);
 
   const handleDelete = async () => {
@@ -56,10 +54,11 @@ const BlogView = () => {
 
       <div className="text-sm text-gray-500 mb-4">
         Posted by{' '}
-        <span className="font-medium">
-          {blog.author?.username || blog.author?.email || 'Unknown'}
-        </span>{' '}
-        on {new Date(blog.createdAt).toLocaleDateString()}
+     <span className="font-medium">
+  {blog.author?.username || blog.author?.email || 'Unknown'}
+</span>{' '}
+on {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Unknown Date'}
+
       </div>
 
       {isAuthor && (

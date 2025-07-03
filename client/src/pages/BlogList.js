@@ -39,7 +39,9 @@ const BlogList = () => {
       onDelete={(deletedId) =>
         setBlogs((prev) => prev.filter((b) => b._id !== deletedId))
       }
+      
     />
+    
   ))
 ) : (
   <p>No blogs found.</p>
